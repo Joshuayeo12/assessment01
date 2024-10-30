@@ -29,10 +29,11 @@ public class Main {
 
 			// while loop is to read each line in the csv file
 			String line;
-			
+
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split(",");
 
+				//getting all the data needed
 				if (data.length >= 7) {
 					try {
 						LocalDate date = LocalDate.parse(data[0], formatter);
@@ -43,7 +44,7 @@ public class Main {
 						int registered = Integer.parseInt(data[5]);
 						int weather = Integer.parseInt(data[6]);
 
-						bikeEntries.add(new BikeEntry(date, season, month, weekday, casual, registered, weather));
+						
 
 					} catch (NumberFormatException e) {
 						System.err.println("invalid data in line" + line);
@@ -57,19 +58,16 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		bikeEntries.sort(Comparator.comparing(BikeEntry::getTotalCyclist).reversed());
+	
 
 		//printing top 5
 		for (int i = 0; i <Math.min(5, bikeEntries.size()); i++) {
 			System.out.println(bikeEntries.get(i));
 		}
-
+ 
 	}
 
-	@Override
-	public String toString() {
-		return "BikeEntry{" + "date=" + date + ", totalCyclists=" + getTotalCyclists() +'}';
-	}
+
 
 
 

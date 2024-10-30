@@ -3,6 +3,8 @@
 
 package vttp.batch5.sdf.task02;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class GameBase {
@@ -17,8 +19,13 @@ public class GameBase {
         Arrays.fill(board, EMPTY);
     }
     
-    //importing TTTfile for game
+    //importing TTTfile to read
+    public void readingTTTFile(String inputDirPath) throws IOException {
+        File dir = new file(inputDirPath);
+    }
     
+    
+
 
 
     public boolean isValidMove(int move) {
