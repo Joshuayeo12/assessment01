@@ -24,7 +24,7 @@ public class Server {
 
             //putting a threaded server to play the game through the server from the main file
 
-
+            threadpool.submit(new Main(sock));
 
         }
     }
