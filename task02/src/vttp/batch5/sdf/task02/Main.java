@@ -9,6 +9,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+
+
+
+
 public class Main implements Runnable {
     private Socket clientSocket;
     private GameBase game;
@@ -17,6 +21,9 @@ public class Main implements Runnable {
         this.clientSocket = clientSocket;
         this.game = new GameBase();
     }
+
+
+    
 
     @Override
     public void run() {
@@ -76,3 +83,5 @@ public class Main implements Runnable {
         }
     }
 }
+
+

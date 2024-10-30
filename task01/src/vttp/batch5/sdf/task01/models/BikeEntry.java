@@ -2,6 +2,8 @@ package vttp.batch5.sdf.task01.models;
 //
 // IMPORTANT: DO NOT MODIFY THIS CLASS
 
+import java.time.LocalDate;
+
 public class BikeEntry {
 
 	private int season;
@@ -15,6 +17,9 @@ public class BikeEntry {
 	private int casual;
 	private int registered;
 
+	public BikeEntry() {
+		//TODO Auto-generated constructor stub
+	}
 	public void setSeason(int season) { this.season = season; }
 	public int getSeason() { return this.season; }
 

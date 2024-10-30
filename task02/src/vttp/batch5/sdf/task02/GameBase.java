@@ -17,6 +17,10 @@ public class GameBase {
         Arrays.fill(board, EMPTY);
     }
     
+    //importing TTTfile for game
+    
+
+
     public boolean isValidMove(int move) {
         return move >= 1 && move <= 9 && board[move - 1] == EMPTY;
     }

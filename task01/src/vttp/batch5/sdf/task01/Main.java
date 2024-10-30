@@ -16,7 +16,7 @@ import vttp.batch5.sdf.task01.models.BikeEntry;
 
 public class Main {
 
-	public static <BikeEntry> void main(String[] args) throws IOException, FileNotFoundException {
+	public static void main(String[] args) throws IOException, FileNotFoundException {
 		List<BikeEntry> bikeEntries = new ArrayList<>();
 		
 		try (BufferedReader br = new BufferedReader(new FileReader("day.csv"))) {
@@ -29,6 +29,7 @@ public class Main {
 
 			// while loop is to read each line in the csv file
 			String line;
+			
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split(",");
 
@@ -55,8 +56,23 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println();
+		
+		bikeEntries.sort(Comparator.comparing(BikeEntry::getTotalCyclist).reversed());
+
+		//printing top 5
+		for (int i = 0; i <Math.min(5, bikeEntries.size()); i++) {
+			System.out.println(bikeEntries.get(i));
+		}
 
 	}
+
+	@Override
+	public String toString() {
+		return "BikeEntry{" + "date=" + date + ", totalCyclists=" + getTotalCyclists() +'}';
+	}
+
+
+
+	
 
 }
