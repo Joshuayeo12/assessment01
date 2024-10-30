@@ -1,5 +1,4 @@
 
-////base code from self practise
 
 package vttp.batch5.sdf.task02;
 
@@ -22,33 +21,33 @@ public class GameBase {
         board = new char[9];
         Arrays.fill(board, EMPTY);
     }
-    
-    //importing TTTfile to read
+
+    // importing TTTfile to read
     public void readingTTTFile(String inputDirPath) throws IOException {
         File dir = new File(inputDirPath);
 
-        if (!dir.exists() || !dir.isDirectory()){
-            throw new
-            IllegalAccessException("Input director does not exist or is not in directory please check again." + inputDirPath);
+        if (!dir.exists() || !dir.isDirectory()) {
+            throw new IllegalAccessException(
+                    "Input director does not exist or is not in directory please check again." + inputDirPath);
         }
-       for (File file : dir.listFiles()){
-        if (file !=null && file.isFile()) {
-            String filePath = file.getAbsolutePath();
-            try{
-                //buffered reader to read line by line
-                try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        for (File file : dir.listFiles()) {
+            if (file != null && file.isFile()) {
+                String filePath = file.getAbsolutePath();
+                try {
+                    // buffered reader to read line by line
+                    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
                         StringBuilder contentBuilder = new StringBuilder();
                         String line;
                         while ((line = reader.readLine()) != null) {
                             contentBuilder.append(line).append("\n");
                         }
                         System.out.println("Processing file: " + filePath);
-                        // Process the content as needed
                     }
 
-                    // Write processed content to output file (for demonstration)
+                    //output the what TTT into the grid
                     try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt", true))) {
-                        writer.write(filePath + ": " + contentBuilder.toString());
+                        Object contentBuilder;
+                        writer.write(filePath + ":" + contentBuilder.toString());
                         writer.newLine();
                     }
                 } catch (IOException e) {
@@ -59,6 +58,18 @@ public class GameBase {
         }
     }
 
+    //for game
+    public boolean isGameOver() {
+        return checkWin(PLAYER) || checkWin(COMPUTER) || !hasEmptyCell();
+    }
+
+    public String getResult() {
+        if (checkWin(COMPUTER))
+            return "Computer wins!";
+        if (checkWin(PLAYER))
+            return "You win!";
+        return "It's a draw!";
+    }
 
     public boolean isValidMove(int move) {
         return move >= 1 && move <= 9 && board[move - 1] == EMPTY;
@@ -68,35 +79,92 @@ public class GameBase {
         board[move - 1] = player;
     }
 
-    // Minimax for optimal AI move
-    int getBestMove() {
-        return 0; // Placeholder for minimax logic
+    // Minimax for optimal 'AI' move, making AI build up from what the TTT files are given
+    public int getBestMove() {
+        int bestScore = Integer.MIN_VALUE;
+        int bestMove = -1;
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == EMPTY) {
+                board[i] = COMPUTER;
+                int score = minimax(0, false);
+                board[i] = EMPTY;
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove = i + 1;
+                }
+            }
+        }
+        return bestMove;
     }
 
-    // Utility method to make a move
-    private void makeMove(int index, char player) {
-        if (board[index] == EMPTY) {
-            board[index] = player;
+    private int minimax(int depth, boolean isMaximizing) {
+        if (checkWin(COMPUTER))
+            return 10 - depth;
+        if (checkWin(PLAYER))
+            return depth - 10;
+        if (!hasEmptyCell())
+            return 0;
+
+        if (isMaximizing) {
+            int bestScore = Integer.MIN_VALUE;
+            for (int i = 0; i < board.length; i++) {
+                if (board[i] == EMPTY) {
+                    board[i] = COMPUTER;
+                    int score = minimax(depth + 1, false);
+                    board[i] = EMPTY;
+                    bestScore = Math.max(score, bestScore);
+                }
+            }
+            return bestScore;
         } else {
-            System.out.println("Invalid move. Try again.");
+            int bestScore = Integer.MAX_VALUE;
+            for (int i = 0; i < board.length; i++) {
+                if (board[i] == EMPTY) {
+                    board[i] = PLAYER;
+                    int score = minimax(depth + 1, true);
+                    board[i] = EMPTY;
+                    bestScore = Math.min(score, bestScore);
+                }
+            }
+            return bestScore;
         }
     }
 
-    // Check if the game is over
-    boolean isGameOver() {
-        return false; // Placeholder for win/loss/draw conditions
+    private boolean checkWin(char player) {
+        int[][] winConditions = {
+                { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 },
+                { 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 },
+                { 0, 4, 8 }, { 2, 4, 6 }
+        };
+        for (int[] condition : winConditions) {
+            if (board[condition[0]] == player && board[condition[1]] == player && board[condition[2]] == player) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    // Print the current state of the board
     public String getBoard() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < board.length; i++) {
             sb.append(board[i] == EMPTY ? " " : board[i]);
-            if ((i + 1) % 3 == 0) sb.append("\n");
-            else sb.append("|");
+            if ((i + 1) % 3 == 0)
+                sb.append("\n");
+            else
+                sb.append("|");
         }
         return sb.toString();
     }
+
+    private boolean hasEmptyCell() {
+        for (char cell : board) {
+            if (cell == EMPTY)
+                return true;
+        }
+        return false;
+    }
+
+}
 
     public static void main(String[] args) {
         try {
@@ -115,30 +183,14 @@ public class GameBase {
                     System.out.println("Computer wins!");
                     break;
                 }
-
-                // Player's turn
-                String input = System.console().readLine("Enter your move: ");
-                int playerMove = Integer.parseInt(input) - 1; // Assuming valid input
-                game.makeMove(playerMove, game.PLAYER);
-                System.out.println(game.getBoard());
-                if (game.checkWin(game.PLAYER)) {
-                    System.out.println("Player wins!");
-                    break;
-                }
-            }
-
-        } catch (IOException | NumberFormatException e) {
+        }
+    } catch (IOException | NumberFormatException e) {
             System.err.println("Error reading files: " + e.getMessage());
         }
     }
 
-    // Utility method to check if the computer has won
-    private boolean checkWin(char player) {
-        return false; // Placeholder for win condition logic
+    private void readAndProcessFiles(String inputDirPath) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'readAndProcessFiles'");
     }
 
-    public char[] getResult() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getResult'");
-    }
-}

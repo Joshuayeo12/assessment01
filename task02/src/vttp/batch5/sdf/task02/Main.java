@@ -1,6 +1,3 @@
-
-//base code from self practise
-
 package vttp.batch5.sdf.task02;
 
 import java.io.BufferedReader;
